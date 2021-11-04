@@ -14,7 +14,7 @@ $projectiterations = ''
 
 # Let's start by getting all of the classification nodes at the project level.
 $projectclassificationnodesUrl = "$($tfsBaseUrl)/$($projectId)/_apis/wit/classificationnodes?`$`depth=2&api-version=5.1-preview"
-$projectclassificationnodes = Invoke-RestMethod -Uri $projectclassificationnodesUrl -Method Get -ContentType "application/json" -Headers $header
+$projectclassificationnodes = Invoke-RestMethod -Uri $projectclassificationnodesUrl -UseBasicParsing -Method Get -ContentType "application/json" -Headers $header
 
 # We don't care about area path, so let's just get the set of iterations that are children of root
 $projectclassificationnodes.value | ForEach-Object {
@@ -25,7 +25,7 @@ $projectclassificationnodes.value | ForEach-Object {
 
 # Query the API for all teams in our project
 $projectteamsurl = "$($tfsBaseUrl)/_apis/projects/$($projectId)/teams?api-version=5.0"
-$projectteams = Invoke-RestMethod -Uri $projectteamsurl -Method Get -ContentType "application/json" -Headers $header
+$projectteams = Invoke-RestMethod -Uri $projectteamsurl -UseBasicParsing -Method Get -ContentType "application/json" -Headers $header
 
 # Iterate over those teams
 $projectteams.value | ForEach-Object {
@@ -47,7 +47,7 @@ $projectteams.value | ForEach-Object {
             $idToPost = $_.identifier
             $hash = @{id="$idToPost";}
             $json = $hash | convertTo-Json
-            Invoke-WebRequest -Uri $iterationsinteamurl -Method POST -Body $json -ContentType "application/json"  -Headers $header
+            Invoke-WebRequest -Uri $iterationsinteamurl -UseBasicParsing -Method POST -Body $json -ContentType "application/json"  -Headers $header
         } else {
             Write-Host "== $($_.name) exists" -ForegroundColor Green
         }
